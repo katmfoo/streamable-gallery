@@ -54,6 +54,7 @@ export default {
     },
     changeSort: function (sort) {
       if (!this.loading && this.sort !== sort) {
+        this.page = 1
         this.sort = sort
         switch (this.sort) {
           case 'date_added':
