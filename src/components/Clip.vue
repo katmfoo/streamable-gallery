@@ -1,10 +1,11 @@
 <template>
   <div class="clip">
+    <div class="spinner" v-if="loading"></div>
     <span class="plays">{{ clip.plays }} views</span>
     <div class="embed" v-html="embed"></div>
     <div class="info">
       <div class="title">
-        {{ number }}. <a :href="clip.url">{{ clip.title }}</a>
+        <a :href="clip.url">{{ clip.title }}</a>
       </div>
       <div class="date">{{ formatDate(clip.date_added) }}</div>
     </div>
@@ -17,22 +18,22 @@ import moment from 'moment'
 
 export default {
   name: 'Clip',
-  props: ['clip', 'number'],
+  props: ['clip'],
   created: function () {
-    this.downloadEmbed()
-  },
-  updated: function () {
     this.downloadEmbed()
   },
   data () {
     return {
-      embed: null
+      embed: null,
+      loading: true
     }
   },
   methods: {
     downloadEmbed: function () {
+      this.loading = true
       axios.get('https://api.streamable.com/oembed.json?url=https://streamable.com/' + this.clip.shortcode).then(response => {
         this.embed = response.data.html
+        this.loading = false
       })
     },
     formatDate: function (unixTimestamp) {
@@ -53,7 +54,13 @@ div.clip {
 }
 
 div.embed {
-  background-color: black;
+  height: 225px;
+}
+
+@media screen and (max-width: 420px) {
+  div.embed {
+    height: auto;
+  }
 }
 
 span.plays {

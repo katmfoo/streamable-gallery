@@ -1,10 +1,16 @@
 <template>
   <div class="app">
-    <div class="clips">
-      <Clip v-for="(value, index) in clips" :key="index" :clip="value" :number="(total - index) - ((page - 1) * count)"/>
+    <div class="header">
+      <div class="square-button" v-on:click="changeSort('date_added')" v-bind:class="{active: sort == 'date_added'}">Newest</div>
+      <div class="square-button" v-on:click="changeSort('plays')" v-bind:class="{active: sort == 'plays'}">Most Popular</div>
+      <div class="square-button" v-on:click="changeSort('title')" v-bind:class="{active: sort == 'title'}">A-Z</div>
+    </div>
+    <div class="spinner" v-if="loading"></div>
+    <div class="clips" v-if="!loading">
+      <Clip v-for="(value, index) in clips" :key="index" :clip="value"/>
     </div>
     <div class="footer">
-      <span class="page-number" v-for="n in totalPages" :key="n" v-on:click="goToPage(n)" v-bind:class="{active: n == page}">{{ n }}</span>
+      <div class="square-button" v-for="n in totalPages" :key="n" v-on:click="goToPage(n)" v-bind:class="{active: n == page}">{{ n }}</div>
     </div>
   </div>
 </template>
@@ -29,6 +35,7 @@ export default {
   },
   methods: {
     downloadClips: function () {
+      this.loading = true
       let params = {
         sort: this.sort,
         sortd: this.sortd,
@@ -40,18 +47,33 @@ export default {
         this.clips = response.data.videos
         this.total = response.data.total
         this.totalPages = Math.ceil(this.total / this.count)
-        console.log(this.clips)
+        this.loading = false
       }).catch(error => {
         alert(error)
       })
     },
-    goToPage: function (page) {
-      this.page = page
-      this.downloadClips()
+    changeSort: function (sort) {
+      if (!this.loading && this.sort !== sort) {
+        this.sort = sort
+        switch (this.sort) {
+          case 'date_added':
+            this.sortd = 'DESC'
+            break
+          case 'plays':
+            this.sortd = 'DESC'
+            break
+          case 'title':
+            this.sortd = 'ASC'
+            break
+        }
+        this.downloadClips()
+      }
     },
-    nextPage: function () {
-      this.page++
-      this.downloadClips()
+    goToPage: function (page) {
+      if (!this.loading && this.page !== page) {
+        this.page = page
+        this.downloadClips()
+      }
     }
   },
   created: function () {
@@ -64,39 +86,43 @@ export default {
 </script>
 
 <style>
+div.header {
+  text-align: center;
+  height: 70px;
+  padding-top: 23px;
+}
+
 div.clips {
   display: flex;
   flex-wrap: wrap;
   font-size: 12px;
   justify-content: center;
-  margin: 40px 0 120px 0;
-  overflow: auto;
 }
 
 div.footer {
-  background-color: #f1f1f1;
-  border-top: 1px solid #dedede;
+  position: absolute;
+  right: 0;
   bottom: 0;
-  padding: 30px 0;
-  position: fixed;
+  left: 0;
+  height: 75px;
+  padding-top: 19px;
   text-align: center;
-  width: 100%;
-  z-index: 2;
 }
 
-span.page-number {
+div.square-button {
   cursor: pointer;
-  margin: 0 4px;
-  padding: 3px;
+  display: inline-block;
+  height: 30px;
+  padding: 5px 10px;
+  margin: 0 3px;
 }
 
-span.page-number:hover {
-  color: gray;
+div.square-button:hover {
+  background-color: lightgray;
 }
 
-span.page-number.active {
-  color: gray;
-  font-weight: 700;
+div.square-button.active {
+  background-color: lightskyblue;
 }
 
 </style>
