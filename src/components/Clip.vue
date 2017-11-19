@@ -51,6 +51,7 @@ div.clip {
   margin: 10px;
   position: relative;
   width: 400px;
+  background-color: white;
 }
 
 div.embed {
