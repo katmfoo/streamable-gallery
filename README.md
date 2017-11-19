@@ -4,7 +4,7 @@ The website https://streamable.com lets a user upload short video clips and send
 
 ### Live demo
 
-This web app is being run live right now at https://patricheal.com/clips/.
+This web app is being run live right now at http://patricheal.com/clips/.
 
 ### How to use
 
