@@ -42,7 +42,7 @@ export default {
         count: this.count,
         page: this.page
       }
-      axios.get('ec2-34-203-215-132.compute-1.amazonaws.com', {params: params})
+      axios.get('http://ec2-34-203-215-132.compute-1.amazonaws.com', {params: params})
       .then(response => {
         this.clips = response.data.videos
         this.total = response.data.total
