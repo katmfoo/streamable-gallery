@@ -22,7 +22,7 @@ $ npm install
 $ npm run dev
 
 # Build for production with minification
-$npm run build
+$ npm run build
 ```
 
 ### Built with
